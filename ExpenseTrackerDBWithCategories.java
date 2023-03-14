@@ -56,3 +56,28 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         deleteButton = new JButton("Delete");
 
 
+        // Hana's part
+        // Initialize table
+
+        tableModel = new DefaultTableModel(new Object[]{"ID", "Amount", "Date", "Category"}, 0);
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM expenses");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                double amount = rs.getDouble("amount");
+                String date = rs.getString("date");
+                String category = rs.getString("category");
+                tableModel.addRow(new Object[]{id, amount, date, category});
+            }
+
+            rs.close();
+        } catch (SQLException ex) {
+            System.err.println("Database error: " + ex.getMessage());
+        }
+
+        expensesTable = new JTable(tableModel);
+
+       
+
+
