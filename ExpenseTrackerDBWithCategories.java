@@ -151,7 +151,7 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
     }
 }
 
-// Anis's part
+// Anis's final part
 
 // Helper method to get the last inserted ID
 private int getLastInsertedId() {
