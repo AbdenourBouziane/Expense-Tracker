@@ -35,7 +35,6 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         } catch (SQLException ex) {
             System.err.println("Database error: " + ex.getMessage());
         }
-// maha part
 
         // Initialize UI components
         amountLabel = new JLabel("Amount:");
@@ -55,10 +54,7 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
 
-
-        // Hana's part
         // Initialize table
-
         tableModel = new DefaultTableModel(new Object[]{"ID", "Amount", "Date", "Category"}, 0);
         try {
             ResultSet rs = stmt.executeQuery("SELECT * FROM expenses");
@@ -77,9 +73,8 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         }
 
         expensesTable = new JTable(tableModel);
-        
-        //Imene
-              // Add UI components to container
+
+        // Add UI components to container
         Container c = getContentPane();
         c.setLayout(new BorderLayout());
 
@@ -107,8 +102,6 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         setVisible(true);
     }
 
-
-    // Abdenour's part 
     // ActionListener method
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
@@ -157,9 +150,23 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         }
     }
 }
+
+// Anis's part
+
+// Helper method to get the last inserted ID
+private int getLastInsertedId() {
+    try {
+        ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()");
+        int id = rs.getInt(1);
+        rs.close();
+        return id;
+    } catch (SQLException ex) {
+        System.err.println("Database error: " + ex.getMessage());
+        return -1;
+    }
 }
 
-
-       
-
-
+public static void main(String[] args) {
+    new ExpenseTrackerDBWithCategories();
+}
+}
