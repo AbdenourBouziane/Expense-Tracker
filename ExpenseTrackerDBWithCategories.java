@@ -108,6 +108,58 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
     }
 
 
+    // Abdenour's part 
+    // ActionListener method
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == addButton) {
+            // Get input values
+            double amount = Double.parseDouble(amountTextField.getText());
+            String date = dateTextField.getText();
+            String category = (String) categoryComboBox.getSelectedItem();
+
+            // Insert into database
+           
+            try {
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO expenses (amount, date, category) VALUES (?, ?, ?)");
+                stmt.setDouble(1, amount);
+                stmt.setString(2, date);
+                stmt.setString(3, category);
+                stmt.executeUpdate();
+                            // Add to table
+            int id = getLastInsertedId();
+            tableModel.addRow(new Object[]{id, amount, date, category});
+
+            // Clear input fields
+            amountTextField.setText("");
+            dateTextField.setText("");
+        } catch (SQLException ex) {
+            System.err.println("Database error: " + ex.getMessage());
+        }
+    } else if (e.getSource() == deleteButton) {
+        // Get selected row index
+        int rowIndex = expensesTable.getSelectedRow();
+
+        if (rowIndex != -1) {
+            // Get expense ID from table model
+            int id = (int) tableModel.getValueAt(rowIndex, 0);
+
+            // Delete from database
+            try {
+                PreparedStatement stmt = conn.prepareStatement("DELETE FROM expenses WHERE id = ?");
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+
+                // Remove from table
+                tableModel.removeRow(rowIndex);
+            } catch (SQLException ex) {
+                System.err.println("Database error: " + ex.getMessage());
+            }
+        }
+    }
+}
+}
+
+
        
 
 
