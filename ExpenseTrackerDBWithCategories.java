@@ -35,7 +35,6 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         } catch (SQLException ex) {
             System.err.println("Database error: " + ex.getMessage());
         }
-// maha part
 
         // Initialize UI components
         amountLabel = new JLabel("Amount:");
@@ -55,10 +54,7 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         addButton = new JButton("Add");
         deleteButton = new JButton("Delete");
 
-
-        // Hana's part
         // Initialize table
-
         tableModel = new DefaultTableModel(new Object[]{"ID", "Amount", "Date", "Category"}, 0);
         try {
             ResultSet rs = stmt.executeQuery("SELECT * FROM expenses");
@@ -77,9 +73,8 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         }
 
         expensesTable = new JTable(tableModel);
-        
-        //Imene
-              // Add UI components to container
+
+        // Add UI components to container
         Container c = getContentPane();
         c.setLayout(new BorderLayout());
 
@@ -107,7 +102,71 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         setVisible(true);
     }
 
+    // ActionListener method
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == addButton) {
+            // Get input values
+            double amount = Double.parseDouble(amountTextField.getText());
+            String date = dateTextField.getText();
+            String category = (String) categoryComboBox.getSelectedItem();
 
-       
+            // Insert into database
+           
+            try {
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO expenses (amount, date, category) VALUES (?, ?, ?)");
+                stmt.setDouble(1, amount);
+                stmt.setString(2, date);
+                stmt.setString(3, category);
+                stmt.executeUpdate();
+                            // Add to table
+            int id = getLastInsertedId();
+            tableModel.addRow(new Object[]{id, amount, date, category});
 
+            // Clear input fields
+            amountTextField.setText("");
+            dateTextField.setText("");
+        } catch (SQLException ex) {
+            System.err.println("Database error: " + ex.getMessage());
+        }
+    } else if (e.getSource() == deleteButton) {
+        // Get selected row index
+        int rowIndex = expensesTable.getSelectedRow();
 
+        if (rowIndex != -1) {
+            // Get expense ID from table model
+            int id = (int) tableModel.getValueAt(rowIndex, 0);
+
+            // Delete from database
+            try {
+                PreparedStatement stmt = conn.prepareStatement("DELETE FROM expenses WHERE id = ?");
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+
+                // Remove from table
+                tableModel.removeRow(rowIndex);
+            } catch (SQLException ex) {
+                System.err.println("Database error: " + ex.getMessage());
+            }
+        }
+    }
+}
+
+// Anis's part
+
+// Helper method to get the last inserted ID
+private int getLastInsertedId() {
+    try {
+        ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()");
+        int id = rs.getInt(1);
+        rs.close();
+        return id;
+    } catch (SQLException ex) {
+        System.err.println("Database error: " + ex.getMessage());
+        return -1;
+    }
+}
+
+public static void main(String[] args) {
+    new ExpenseTrackerDBWithCategories();
+}
+}
