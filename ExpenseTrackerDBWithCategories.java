@@ -56,3 +56,58 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         deleteButton = new JButton("Delete");
 
 
+        // Hana's part
+        // Initialize table
+
+        tableModel = new DefaultTableModel(new Object[]{"ID", "Amount", "Date", "Category"}, 0);
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM expenses");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                double amount = rs.getDouble("amount");
+                String date = rs.getString("date");
+                String category = rs.getString("category");
+                tableModel.addRow(new Object[]{id, amount, date, category});
+            }
+
+            rs.close();
+        } catch (SQLException ex) {
+            System.err.println("Database error: " + ex.getMessage());
+        }
+
+        expensesTable = new JTable(tableModel);
+        
+        //Imene
+              // Add UI components to container
+        Container c = getContentPane();
+        c.setLayout(new BorderLayout());
+
+        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
+        inputPanel.add(amountLabel);
+        inputPanel.add(amountTextField);
+        inputPanel.add(dateLabel);
+        inputPanel.add(dateTextField);
+        inputPanel.add(categoryLabel);
+        inputPanel.add(categoryComboBox);
+        inputPanel.add(addButton);
+        inputPanel.add(deleteButton);
+
+        c.add(inputPanel, BorderLayout.NORTH);
+        c.add(new JScrollPane(expensesTable), BorderLayout.CENTER);
+
+        // Register event listeners
+        addButton.addActionListener(this);
+        deleteButton.addActionListener(this);
+
+        // Set window properties
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Expense Tracker");
+        setVisible(true);
+    }
+
+
+       
+
+
