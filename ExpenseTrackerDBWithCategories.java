@@ -35,4 +35,24 @@ public class ExpenseTrackerDBWithCategories extends JFrame implements ActionList
         } catch (SQLException ex) {
             System.err.println("Database error: " + ex.getMessage());
         }
+// maha part
+
+        // Initialize UI components
+        amountLabel = new JLabel("Amount:");
+        dateLabel = new JLabel("Date (YYYY-MM-DD):");
+        categoryLabel = new JLabel("Category:");
+
+        amountTextField = new JTextField(10);
+        dateTextField = new JTextField(10);
+
+        categories = new Vector<>();
+        categories.add("Food");
+        categories.add("Transportation");
+        categories.add("Entertainment");
+        categories.add("Other");
+        categoryComboBox = new JComboBox<>(categories);
+
+        addButton = new JButton("Add");
+        deleteButton = new JButton("Delete");
+
 
